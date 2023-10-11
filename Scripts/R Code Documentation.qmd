@@ -1,0 +1,14 @@
+---
+title: "R Code Documentation"
+author: "Saul-42"
+format: html
+editor: visual
+---
+
+## Foreword
+This file will index and track all changes and modifications made to the actual code scripts for the entire duration of the PhD. project.
+
+### Version 1.0 of code and script organization 
+The initial layout is a series of `.R` scripts with numbers (format `00. ; 01. ; ...`) as an ascending indexing system.
+Each script is dedicated to a particular task of the workflow dealing with the movement data, like "clean data" and "calculate MCV Home Range".
+Each script will have a short description of its intended function, followed by a section with commands to load all the necessary R packages used in that specific code.
