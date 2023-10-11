@@ -7,3 +7,5 @@
 # Packages ####
 library(move)
 
+### Sign in into Movebank ####
+cred <- 
