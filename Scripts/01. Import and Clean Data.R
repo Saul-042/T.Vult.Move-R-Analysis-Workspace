@@ -6,5 +6,3 @@
 
 # Packages ####
 library(move)
-
-s
