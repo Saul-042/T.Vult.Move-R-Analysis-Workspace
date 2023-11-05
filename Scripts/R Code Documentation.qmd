@@ -1,14 +1,34 @@
 ---
 title: "R Code Documentation"
 author: "Saul-42"
-format: html
+format: pdf
 editor: visual
 ---
 
 ## Foreword
+
 This file will index and track all changes and modifications made to the actual code scripts for the entire duration of the PhD. project.
 
-### Version 1.0 of code and script organization 
-The initial layout is a series of `.R` scripts with numbers (format `00. ; 01. ; ...`) as an ascending indexing system.
-Each script is dedicated to a particular task of the workflow dealing with the movement data, like "clean data" and "calculate MCV Home Range".
-Each script will have a short description of its intended function, followed by a section with commands to load all the necessary R packages used in that specific code.
+**IMPORTANT NOTE:** As at present we are still in the trasition between `move` and `move2`, all the Scripts will have code that works with the `move` package or the updated `move2` package. It might be necessary to convert between the two object types. The idea is to use either one in the workflow as `move2` gets brought to full functionality.
+
+### Version 1.0 of code and script organization
+
+The initial layout is a series of `.R` scripts with numbers (format `00. ; 01. ; ...`) as an ascending indexing system. Each script is dedicated to a particular task of the workflow dealing with the movement data, like "clean data" and "calculate MCV Home Range". Each script will have a short description of its intended function, followed by a section with commands to load all the necessary R packages used in that specific code. Then it will have sections dedicated to each individual step of the particular task, using the format "\# <Step Name> -------...". The number of hash in each Section name follows standard Markdown notation for headings in descending order of importance.
+
+## Notes on Script 01: CLEAN DATA
+
+### `Move` (Old) Workflow:
+
+1.  The movement data has to be downloaded from the Movebank online repository in `.csv` format, and then imported to the R environment using the function `read.csv()`, as the size of the datasets makes them difficult to wield using the current internet speed.
+
+2.  In the Animove Script (ref: Lesson_2_2022) there is the option of using the `move()` function for directly importing the `.csv`, but when using it to import the T.Vulture data, an error appears:
+
+    (`Error in validityMethod(as(object, superClass)) : The dataset includes double timestamps first one:2021-01-13 23:00:08)`)
+
+    `(S42 NOTE)(#OP)(27/10/2023)` This is likely due to multi-location entries, therefore making it necessary to pre-process the dataset first. Check time stamps and Eliminate duplicates and multi-locations before converting the dataset to the Move class format.
+
+3.  In the `as.POSIXct()` function, the argument `format = "%F %T"` uses these values as "%F" is equivalent to %Y-%m-%d and "%T" is equivalent to %H:%M:%S.
+
+### `Move2` (New) Workflow:
+
+1.  There is the option of running the Old Workflow using the `move` package and the convert the resulting object to the `move2` type.
