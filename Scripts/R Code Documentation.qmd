@@ -5,11 +5,11 @@ format: pdf
 editor: visual
 ---
 
-## Foreword
+## NOTES
 
 This file will index and track all changes and modifications made to the actual code scripts for the entire duration of the PhD. project.
 
-**IMPORTANT NOTE:** As at present we are still in the trasition between `move` and `move2`, all the Scripts will have code that works with the `move` package or the updated `move2` package. It might be necessary to convert between the two object types. The idea is to use either one in the workflow as `move2` gets brought to full functionality.
+**IMPORTANT NOTE:** As at present we are still in the transition between `move` and `move2`, all the Scripts will have code that works with the `move` package or the updated `move2` package. It might be necessary to convert between the two object types. The idea is to use either one in the workflow as `move2` gets brought to full functionality.
 
 ### Version 1.0 of code and script organization
 
@@ -31,4 +31,14 @@ The initial layout is a series of `.R` scripts with numbers (format `00. ; 01. ;
 
 ### `Move2` (New) Workflow:
 
-1.  There is the option of running the Old Workflow using the `move` package and the convert the resulting object to the `move2` type.
+1.  `(S42 NOTE)` There is the option of running the Old Workflow using the `move` package and the convert the resulting object to the `move2` type.
+
+2.  The presence of missing values in the dataset can now be due to the inclusion of non-location data from other sensors (ACC, MAG, etc.) in the same `move2` object. However, if the analysis to be carried over only encompasses the use of GPS data, then is recommendable to eliminate them to save memory space.
+
+    This means that we might be producing two different kind of `move2` objects at the end of the `Script 01: CLEAN DATA`, one tight dataset containing strictly the data from the GPS sensor, and the other containing data from all the other sensors besides.
+
+3.  The new algorithm produces a different result when outputting a clean dataset without duplicates or incomplete registries.
+
+    The old script (uses package `move`) takes the raw data of Vulture "Cuba-7198" (that has 1.511.956 observations) and leaves it with 302.309 elements after cleaning it.
+
+    The new script (uses package `move2`) outputs 302331 elements after the clean process is over, meaning that 21 observation don't get picked by this algorithm.

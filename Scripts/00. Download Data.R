@@ -20,7 +20,8 @@ movebank_download_study_info(study_id = 1393954358) %>%
   print(width = Inf)
 
 #### Check for reference data of animals, deployments and tags
-movebank_download_deployment(study_id = 1393954358)
+movebank_download_deployment(study_id = 1393954358) %>% 
+  print(width = Inf)
 
 
 ## 3. Download the movement data -----------------------------------------------------------------------
@@ -28,15 +29,16 @@ movebank_download_deployment(study_id = 1393954358)
 ###  lot of time and might crash R.
 
 #### Download a dataset from a specific animal
-movebank_download_study(study_id = 1918503,
+movebank_download_study(study_id = 1393954358,
                         attributes = NULL,
-                        sensor_type_id = "radio-transmitter",
-                        #individual_id = c(1918727, 1918739))
-                        individual_local_identifier = c(239,360))
+                        individual_local_identifier = "Cuba-7198")
 
 #### Download a dataset from a specific animal in a defined time period
 #### e.g. between "2022-03-01 00:00:00" and "2022-03-15 00:00:00".
-
+TVult.cut <- movebank_download_study(study_id = 1393954358,
+                                attributes = NULL,
+                                timestamp_start = as.POSIXct("2022-03-01 00:00:005", tz="UTC"),
+                                timestamp_end = as.POSIXct("2022-03-15 00:00:00", tz="UTC"))
 
 
 # `Move` (Old) Workflow --------------------------------------------------------------------------------
