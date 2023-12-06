@@ -11,6 +11,28 @@ This file will index and track all changes and modifications made to the actual 
 
 **IMPORTANT NOTE:** As at present we are still in the transition between `move` and `move2`, all the Scripts will have code that works with the `move` package or the updated `move2` package. It might be necessary to convert between the two object types. The idea is to use either one in the workflow as `move2` gets brought to full functionality.
 
+Folder Structure for the Workspace
+
+-   Data_Raw folder
+
+    For movement data downloaded from Movebank. SOP is to delete any older files when new ones are brought in. This is currently only necessary for the few (5 as of Dec.2023) birds still transmitting new data.
+
+-   Data_Cleaned
+
+    For movement data that has been cleaned of duplicates, multi-locations and had its dates checked. As both `move` and `move2` packages are being used to analyse the data, two files for each Vulture will be created, with a specific naming convention for the outputs of each cleaning algorithm. `move`-cleaned data will be "Mv1.Cln.Vult\<number\>data.Rdata; and `move2`-cleaned data will be "Mv2.ClnLocs.Vult\<number\>.Rdata".
+
+-   Data_Processed
+
+    For movement datasets after they have undergone transformations.
+
+-   Scripts
+
+    Dedicated for Script `.R` files
+
+-   Visualizations
+
+    For the outputs of visual analysis, like graphs, plots, maps, etc.
+
 ### Version 1.0 of code and script organization
 
 The initial layout is a series of `.R` scripts with numbers (format `00. ; 01. ; ...`) as an ascending indexing system. Each script is dedicated to a particular task of the workflow dealing with the movement data, like "clean data" and "calculate MCV Home Range". Each script will have a short description of its intended function, followed by a section with commands to load all the necessary R packages used in that specific code. Then it will have sections dedicated to each individual step of the particular task, using the format "\# <Step Name> -------...". The number of hash in each Section name follows standard Markdown notation for headings in descending order of importance.
@@ -37,8 +59,8 @@ The initial layout is a series of `.R` scripts with numbers (format `00. ; 01. ;
 
     This means that we might be producing two different kind of `move2` objects at the end of the `Script 01: CLEAN DATA`, one tight dataset containing strictly the data from the GPS sensor, and the other containing data from all the other sensors besides.
 
-3.  The new algorithm produces a different result when outputting a clean dataset without duplicates or incomplete registries.
+3.  The new algorithm produces a different results when outputting a clean dataset without duplicates or incomplete registries. The raw data of Vulture "Cuba-7198" (that has 1.511.956 observations when downloaded from Movebank) produces:
 
-    The old script (uses package `move`) takes the raw data of Vulture "Cuba-7198" (that has 1.511.956 observations) and leaves it with 302.309 elements after cleaning it.
+    -   The old script (uses package `move`) takes the raw data and leaves it with 302.309 elements after cleaning it.
 
-    The new script (uses package `move2`) outputs 302331 elements after the clean process is over, meaning that 21 observation don't get picked by this algorithm.
+    -   The new script (uses package `move2`) outputs 302.331 elements after the clean process is over, meaning that 21 observations don't get picked by the new algorithm.

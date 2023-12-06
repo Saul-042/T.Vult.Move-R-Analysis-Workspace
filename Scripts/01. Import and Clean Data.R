@@ -47,7 +47,7 @@ table(duplicated(mt_time(TVult.mv2_loc)))
 
 ### Save the Move2 object
 #### IMPORTANT: CHANGE the file name of each Move2 Object to be consistent with the animal ID
-save(TVult.mv2_loc, file = "Data_Processed/Mv2.ClnLocs.Vult7198.Rdata")
+save(TVult.mv2_loc, file = "Data_Cleaned/Mv2.ClnLocs.Vult7198.Rdata")
 
 
 
@@ -168,4 +168,4 @@ TVult.mv1 <- move(x = TVult1$location.long, y = TVult1$location.lat, time = TVul
 
 ### Save the resulting Move object
 #### IMPORTANT: CHANGE the file name of each Move Object to be consistent with the animal ID
-save(TVult.mv1, file = "Data_Processed/Mv1.Cln.Vult7198data.Rdata")
+save(TVult.mv1, file = "Data_Cleaned/Mv1.Cln.Vult7198data.Rdata")
