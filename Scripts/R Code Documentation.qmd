@@ -47,7 +47,7 @@ The initial layout is a series of `.R` scripts with numbers (format `00. ; 01. ;
 
     (`Error in validityMethod(as(object, superClass)) : The dataset includes double timestamps first one:2021-01-13 23:00:08)`)
 
-    `(S42 NOTE)(#OP)(27/10/2023)` This is likely due to multi-location entries, therefore making it necessary to pre-process the dataset first. Check time stamps and Eliminate duplicates and multi-locations before converting the dataset to the Move class format.
+    `(S42 NOTE)(#OP)(27/10/2023)` This is likely due to multi-location entries, therefore making it necessary to pre-process the dataset first. Check time stamps and eliminate duplicates and multi-locations before converting the dataset to the Move class format.
 
 3.  In the `as.POSIXct()` function, the argument `format = "%F %T"` uses these values as "%F" is equivalent to %Y-%m-%d and "%T" is equivalent to %H:%M:%S.
 
@@ -59,14 +59,29 @@ The initial layout is a series of `.R` scripts with numbers (format `00. ; 01. ;
 
     This means that we might be producing two different kind of `move2` objects at the end of the `Script 01: CLEAN DATA`, one tight dataset containing strictly the data from the GPS sensor, and the other containing data from all the other sensors besides.
 
-3.  The new algorithm produces a different results when outputting a clean dataset without duplicates or incomplete registries. The raw data of Vulture "Cuba-7198" (that has 1.511.956 observations when downloaded from Movebank) produces:
+3.  The new algorithm produces a different result when outputting a clean dataset without duplicates or incomplete registries. The raw data of Vulture "Cuba-7198" (that has 1.511.956 observations when downloaded from Movebank) produces:
 
     -   The old script (uses package `move`) takes the raw data and leaves it with 302.309 elements after cleaning it.
 
-    -   The new script (uses package `move2`) outputs 302.331 elements after the clean process is over, meaning that 21 observations don't get picked by the new algorithm.
+    -   The new script (uses package `move2`) outputs 302.331 elements after the clean process is over, meaning that 21 records don't get deleted by the new algorithm.
 
 ## Notes on Script 02: EXPLORE AND VISUALIZE DATA
 
 ### `Move` (Old) Workflow:
 
-1.  When the table with the tempral distribution of records across time of the day and months of the year is printed, there are some months with `NA` values at some hours of the day. This might or might not be a problem for future analysis. Some times maybe should be removed from the dataset to make reliable statistical comparisons.
+1.  When the table with the temporal distribution of records across time of the day and months of the year is printed, there are some months with `NA` values at some hours of the day. This might or might not be a problem for future analysis. Some times maybe should be removed from the dataset to make reliable statistical comparisons.
+2.  `(S42 NOTE)` There is a section on the Script of the Lesson ¨Initial Exploration of Movement Data¨ of Animove 2022 related to Missed Fixes (the last section), where they deal with them. The problem is that different tag models record empty fixes as NA values in `Lon` and `Lat`, and others just dont record anything and jump the fix. I have doubts regarding if the Vulture data has missed fixes, but the most likely is that the empty values were eliminated during the Cleaning process.
+
+### `Move2` (New) Workflow:
+
+1.  `(S42 NOTE)` None of the functions in the Animove Script (ref: Lesson_3_2023) for plotting the movement data on a map works. There are error messages with both the `rnaturalearth` package use and the `ggmap::get_map` function. The later is likely due to connection permit issues (last tried in 2/2/2024, using mobile data + hotspot to connect to the internet), [\<TO CHECK\>]{.underline} if the function works outside of Cuba.
+
+2.  Function `mapview()` of the same-name package doesn't work with `move2` objects, but it does it with objects of class `sf`.
+
+    -   Therefore, it's necessary remove class "move2" from object and let it with `sf`.
+
+## Notes on Script 03: ANALYZE TRAJECTORIES
+
+### `Move2` (New) Workflow:
+
+1.  

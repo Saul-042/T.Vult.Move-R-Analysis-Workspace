@@ -1,6 +1,6 @@
-#Title############################################
-# T.VULTURE MOVE ANALYSIS. Script 01: CLEAN DATA #
-#Function#########################################
+#Title ############################################
+# T.VULTURE MOVE ANALYSIS. Script 01: CLEAN DATA ##
+#Function #########################################
 ## Converts the downloaded .csv file from Movebank to a Move object
 ## Cleans raw movement data and eliminate duplicates and incomplete records, as well as multi-locations
 
@@ -52,9 +52,9 @@ save(TVult.mv2_loc, file = "Data_Cleaned/Mv2.ClnLocs.Vult7198.Rdata")
 
 
 # `Move` (Old) Workflow -----------------------------------------------------------------------------------
-## Packages -----------------------------------------------------------------------------------------------
-library(move)
+## Packages 
 
+library(move)
 
 ## 1. Import the data -------------------------------------------------------------------------------------
 ## The data has been downloaded from the Movebank repository in '.csv' format
