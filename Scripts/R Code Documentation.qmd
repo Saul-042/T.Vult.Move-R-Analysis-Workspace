@@ -47,7 +47,7 @@ The initial layout is a series of `.R` scripts with numbers (format `00. ; 01. ;
 
     (`Error in validityMethod(as(object, superClass)) : The dataset includes double timestamps first one:2021-01-13 23:00:08)`)
 
-    `(S42 NOTE)(#OP)(27/10/2023)` This is likely due to multi-location entries, therefore making it necessary to pre-process the dataset first. Check time stamps and eliminate duplicates and multi-locations before converting the dataset to the Move class format.
+    `(S42 NOTE)(#Opinion)(27/10/2023)` This is likely due to multi-location entries, therefore making it necessary to pre-process the dataset first. Check time stamps and eliminate duplicates and multi-locations before converting the dataset to the Move class format.
 
 3.  In the `as.POSIXct()` function, the argument `format = "%F %T"` uses these values as "%F" is equivalent to %Y-%m-%d and "%T" is equivalent to %H:%M:%S.
 
@@ -84,4 +84,4 @@ The initial layout is a series of `.R` scripts with numbers (format `00. ; 01. ;
 
 ### `Move2` (New) Workflow:
 
-1.  
+1.  `(S42 NOTE)` Consider if it would be necessary to use a dynamic Brownian Bridge Movement Model to analyze the variance of movement in the Turkey Vultures.
