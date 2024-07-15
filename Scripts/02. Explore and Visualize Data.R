@@ -9,28 +9,32 @@
 
 library(move2)
 library(mapview)
+library(units)
 library(dplyr)
 
 ## 0. Load the cleaned data -------------------------------------------------------------------------------
-load(choose.files()) ## Select the file from the Cleaned Data folder
+load(choose.files()) ## Select the file from the Data_Cleaned folder
 
 ## 1. Check the general geographical distribution of the data ---------------------------------------------
 ### Change the class of the object to `sf`
-VultSF <- TVult1.lc
-class(VultSF) <- class(TVult1.lc) %>% setdiff("move2") # Remove the "move2" class
+VultSF <- TVult.mv2_loc
+class(VultSF) <- class(TVult.mv2_loc) %>% setdiff("move2") # Remove the "move2" class
 
-### Visualize the location records as points
-#### <IMPORTANT WARNING>: This is a high intensity process for the computer.
-mapview::mapView(VultSF, zcol="individual-local-identifier", legend=F)
 ### Visualize the movement data as segments
-mapview::mapView(mt_track_lines(TVult1.lc), zcol="individual-local-identifier", legend=F)
+mapView(mt_track_lines(TVult.mv2_loc), zcol="individual-local-identifier", legend=F)
+## OR ##
+mapView(mt_track_lines(Cln_Vult.All$`individual-local-identifier`), zcol="individual-local-identifier", legend=F)
+### Visualize the location records as points
+#### <IMPORTANT WARNING>: This is a high-intensity process for the computer.
+mapView(VultSF, zcol="individual-local-identifier", legend=F)
+
 
 ## 2. Explore the temporal distribution and resolution of the data ----------------------------------------
 ### Tabulate the amount of records per year and month
-table(year(mt_time(TVult1.lc)), month(mt_time(TVult1.lc)))
+table(year(mt_time(TVult.mv2_loc)), month(mt_time(TVult.mv2_loc)))
 
 ### Extract the time lags between records
-timeLags <- mt_time_lags(TVult1.lc) ## It uses by default the most convenient time unit
+timeLags <- mt_time_lags(TVult.mv2_loc) ## It uses by default the most convenient time unit
 #### REMEMBER that the last value of the time lag vector will be an NA.
 
 ### Check the distribution of time lags between records
@@ -43,22 +47,22 @@ hist(timeLags_noU, breaks=50, main=NA, xlab="Time lag in seconds")
 hist(timeLags_noU[timeLags_noU<30], breaks=25, main=NA, xlab="Time lag in seconds")
 
 ### Extract the time stamps of the movement data
-ts <- mt_time(TVult1.lc)
+ts <- mt_time(TVult.mv2_loc)
 ### Convert the time stamps into the local time of the study
 tsLocal <- lubridate::with_tz(ts, tzone="America/Havana")
 ### Tabulate the number of locations per months and time of the day
-TVult1.lc %>% group_by(Month = lubridate::month(tsLocal), Hour = lubridate::hour(tsLocal)) %>% 
+TVult.mv2_loc %>% group_by(Month = lubridate::month(tsLocal), Hour = lubridate::hour(tsLocal)) %>% 
   summarize(N.locations = n()) %>% sf::st_drop_geometry() %>% print(n=200)
 
 ## 3. Explore the spatial distribution and resolution of the data -----------------------------------------
 ### Extract the lengths of segments of the movement data
-dist <- units::set_units(mt_distance(TVult1.lc), m)
+dist <- set_units(mt_distance(TVult.mv2_loc), m)
 ### Visualize the distribution of distances between records
 summary(dist)
 hist(drop_units(dist), xlim = c(0,100), breaks=20000, main=NA)
 
 ### Extract the speed of movement between locations 
-speeds <- units::set_units(mt_speed(TVult1.lc), m/s)
+speeds <- set_units(mt_speed(TVult.mv2_loc), m/s)
 ### Visualize the distribution of velocity of movement between locations 
 summary(speeds)
 hist(drop_units(speeds), breaks="FD")
@@ -69,20 +73,20 @@ speedVsTimeLag <- speedVsTimeLag[speedVsTimeLag$timeLag < set_units(10, hour) & 
 plot(speedVsTimeLag$timeLag, speedVsTimeLag$speeds, xlab='Time lag', ylab='Speed', pch=19)
 
 ### Extract the azimuth of movement of the segments
-direction <- mt_azimuth(TVult1.lc)
+direction <- mt_azimuth(TVult.mv2_loc)
 ### Visualize the distribution of the directions of movement of the segments
 summary(direction)
 hist(direction,  breaks = 18, xlab="Direction of movement", main = NA)
 
 ### Extract the turning angles between the segments
-turnAngles <- mt_turnangle(TVult1.lc)
+turnAngles <- mt_turnangle(TVult.mv2_loc)
 ### Visualize the distribution of the turning angles between the segments
 summary(turnAngles)
 hist(turnAngles, breaks = 18, xlab="Turning Angle", main = NA)
 # Normally, the distribution should look like a bell curve, with most of the cases going close to 0º.
 
 ### Check for missed fixes in the movement data
-unique(sf::st_is_empty(TVult1.lc))
+unique(sf::st_is_empty(TVult.mv2_loc))
 
 
 # `Move` (Old) Workflow -----------------------------------------------------------------------------------

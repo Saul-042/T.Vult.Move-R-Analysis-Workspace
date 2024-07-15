@@ -25,7 +25,7 @@ str(TVult.mv2)
 TVult.mv2 <- arrange(TVult.mv2, mt_time(TVult.mv2))
 
 ### Check for any outliers in the dataset
-mt_movebank_visible(TVult.mv2) %>% table() # The printed return should be TRUE
+mt_movebank_visible(TVult.mv2) %>% table() # The printed return should be TRUE in all cases
 ### If the return is FALSE, remove the outliers
 TVult.mv2 <- mt_filter_movebank_visible(TVult.mv2)
 
@@ -37,8 +37,10 @@ TVult.mv2_loc <- filter(TVult.mv2, !sf::st_is_empty(TVult.mv2))
 ### Check for duplicated values
 table(duplicated(mt_time(TVult.mv2_loc)))
 ### Exclude  all duplicates by selecting specific columns
-TVult.mv2_loc <- TVult.mv2_loc[mt_unique(dplyr::select(TVult.mv2_loc, -c("event-id","eobs:battery-voltage",
-                                                                  "eobs:key-bin-checksum","import-marked-outlier"))), ]
+TVult.mv2_loc <- TVult.mv2_loc[mt_unique(select(TVult.mv2_loc, -c("event-id",
+                                                                  "eobs:battery-voltage",
+                                                                  "eobs:key-bin-checksum",
+                                                                  "import-marked-outlier"))), ]
 ### Check for duplicated values again
 table(duplicated(mt_time(TVult.mv2_loc)))
 
@@ -47,7 +49,7 @@ table(duplicated(mt_time(TVult.mv2_loc)))
 
 ### Save the Move2 object
 #### IMPORTANT: CHANGE the file name of each Move2 Object to be consistent with the animal ID
-save(TVult.mv2_loc, file = "Data_Cleaned/Mv2.ClnLocs.Vult7198.Rdata")
+save(TVult.mv2_loc, file = "Data_Cleaned/Mv2.ClnLocs.Vult7xxx.Rdata")
 
 
 

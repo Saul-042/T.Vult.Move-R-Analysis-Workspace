@@ -19,7 +19,7 @@ Folder Structure for the Workspace
 
 -   Data_Cleaned
 
-    For movement data that has been cleaned of duplicates, multi-locations and had its dates checked. As both `move` and `move2` packages are being used to analyse the data, two files for each Vulture will be created, with a specific naming convention for the outputs of each cleaning algorithm. `move`-cleaned data will be "Mv1.Cln.Vult\<number\>data.Rdata; and `move2`-cleaned data will be"Mv2.ClnLocs.Vult\<number\>.Rdata".
+    For movement data that has been cleaned of duplicates, multi-locations and had its dates checked. As both `move` and `move2` packages are being used to analyse the data, ultimately two files for each Vulture will be created, with a specific naming convention for the outputs of each cleaning algorithm. `move`-cleaned data will be "Mv1.Cln.Vult\<number\>data.Rdata; and `move2`-cleaned data will be"Mv2.ClnLocs.Vult\<number\>.Rdata".
 
 -   Data_Processed
 
@@ -35,13 +35,21 @@ Folder Structure for the Workspace
 
 ### Version 1.0 of code and script organization
 
-The initial layout is a series of `.R` scripts with numbers (format `00. ; 01. ; ...`) as an ascending indexing system. Each script is dedicated to a particular task of the workflow dealing with the movement data, like "clean data" and "calculate MCV Home Range". Each script will have a short description of its intended function, followed by a section with commands to load all the necessary R packages used in that specific code. Then it will have sections dedicated to each individual step of the particular task, using the format "\# <Step Name> -------...". The number of hash in each Section name follows standard Markdown notation for headings in descending order of importance.
+The initial layout is a series of `.R` scripts with numbers (format `00. ; 01. ;...`) as an ascending indexing system. Each script is dedicated to a particular task of the workflow dealing with movement data, like "Clean data" and "Calculate Home Ranges". Branches and/or additional steps in the workflow that entail their own separate set of instructions can also be included (format `01A. ; 01B. ; 02A. ;...`) .
+
+Each script will have a short description of its intended function, followed by a section with commands to load all the necessary R packages used in that specific code. Then it will have sections dedicated to each individual step of the particular task, using the format "\# <Step Name> -------...". The number of hash in each Section name follows standard Markdown notation for headings in descending order of importance.
+
+### Version 2.0 of code and script organization
+
+The script organization system will be changed due to flexibility issues. The neat separation in ascending numbers doesn't take into account branches or alternative paths, and makes it cumbersome to place certain codes that must be applied to just specific situations.
+
+The .R scripts will be named according to a letter
 
 ## Notes on Script 01: CLEAN DATA
 
 ### `Move` (Old) Workflow:
 
-1.  The movement data has to be downloaded from the Movebank online repository in `.csv` format, and then imported to the R environment using the function `read.csv()`, as the size of the datasets makes them difficult to wield using the current internet speed.
+1.  The movement data has to be downloaded from the Movebank online repository in `.csv` format, and then imported to the R environment using the function `read.csv()`, as the size of the datasets makes them difficult to wield using the available internet speed.
 
 2.  In the Animove Script (ref: Lesson_2_2022) there is the option of using the `move()` function for directly importing the `.csv`, but when using it to import the T.Vulture data, an error appears:
 
@@ -53,7 +61,7 @@ The initial layout is a series of `.R` scripts with numbers (format `00. ; 01. ;
 
 ### `Move2` (New) Workflow:
 
-1.  `(S42 NOTE)` There is the option of running the Old Workflow using the `move` package and the convert the resulting object to the `move2` type.
+1.  `(S42 NOTE)` The option of running the Old Workflow using the `move` package and the convert the resulting object to the `move2` type is available in the Script.
 
 2.  The presence of missing values in the dataset can now be due to the inclusion of non-location data from other sensors (ACC, MAG, etc.) in the same `move2` object. However, if the analysis to be carried over only encompasses the use of GPS data, then is recommendable to eliminate them to save memory space.
 
@@ -65,16 +73,20 @@ The initial layout is a series of `.R` scripts with numbers (format `00. ; 01. ;
 
     -   The new script (uses package `move2`) outputs 302.331 elements after the clean process is over, meaning that 21 records don't get deleted by the new algorithm.
 
+        -   `IDEA`: Compare the two Cleaned datasets to look for the differing locations. It might be necessary to implement this across multiple individuals to pinpoint the possible causes of the differences in outputs between the two algorithms.
+
+4.  The new algorithm also is inconsistent with the amount of variables that leaves in the movement data when the `.csv` file is cleaned of duplicates and missing values. Some Vulture's data has 41 variables, and others has 43, for example.
+
 ## Notes on Script 02: EXPLORE AND VISUALIZE DATA
 
 ### `Move` (Old) Workflow:
 
 1.  When the table with the temporal distribution of records across time of the day and months of the year is printed, there are some months with `NA` values at some hours of the day. This might or might not be a problem for future analysis. Some times maybe should be removed from the dataset to make reliable statistical comparisons.
-2.  `(S42 NOTE)` There is a section on the Script of the Lesson ¨Initial Exploration of Movement Data¨ of Animove 2022 related to Missed Fixes (the last section), where they deal with them. The problem is that different tag models record empty fixes as NA values in `Lon` and `Lat`, and others just dont record anything and jump the fix. I have doubts regarding if the Vulture data has missed fixes, but the most likely is that the empty values were eliminated during the Cleaning process.
+2.  `(S42 NOTE)` There is a section on the Script of the Lesson ¨Initial Exploration of Movement Data¨ of Animove 2022 related to Missed Fixes (the last section), where they deal with them. The problem is that different tag models record empty fixes as NA values in `Lon` and `Lat`, and others just don't record anything and jump the fix. I have doubts regarding if the Vulture data has missed fixes, but the most likely is that the empty values were eliminated during the Cleaning process.
 
 ### `Move2` (New) Workflow:
 
-1.  `(S42 NOTE)` None of the functions in the Animove Script (ref: Lesson_3_2023) for plotting the movement data on a map works. There are error messages with both the `rnaturalearth` package use and the `ggmap::get_map` function. The later is likely due to connection permit issues (last tried in 2/2/2024, using mobile data + hotspot to connect to the internet), [\<TO CHECK\>]{.underline} if the function works outside of Cuba.
+1.  `(S42 NOTE)` None of the functions in the Animove Script (ref: Lesson_3_2023) for plotting the movement data on a map works. There are error messages with both the `rnaturalearth` package use and the `ggmap::get_map` function. The later is likely due to connection permit issues in Cuba (last tried in 2/2/2024, using mobile data + hotspot to connect to the internet), [`<TO CHECK>`]{.underline} if the function works outside of Cuba.
 
 2.  Function `mapview()` of the same-name package doesn't work with `move2` objects, but it does it with objects of class `sf`.
 
@@ -85,3 +97,9 @@ The initial layout is a series of `.R` scripts with numbers (format `00. ; 01. ;
 ### `Move2` (New) Workflow:
 
 1.  `(S42 NOTE)` Consider if it would be necessary to use a dynamic Brownian Bridge Movement Model to analyze the variance of movement in the Turkey Vultures.
+
+### **`UNFINISHED...`**
+
+## Notes on Script 04: ANALYZE AREAS
+
+### `Move` (Old) Workflow:
