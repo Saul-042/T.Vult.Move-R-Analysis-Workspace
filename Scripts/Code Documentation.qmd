@@ -1,53 +1,23 @@
 ---
-title: "R Code Documentation"
+title: "Code Documentation"
 author: "Saul-42"
 format: pdf
 editor: visual
 ---
 
-## NOTES
+# CUBAN TURKEY VULTURE MOVEMENT ANALYSIS
 
-This file will index and track all changes and modifications made to the actual code scripts for the entire duration of the PhD. project.
+# CODE DOCUMENTATION
 
-**IMPORTANT NOTE:** As at present we are still in the transition between `move` and `move2`, all the Scripts will have code that works with the `move` package or the updated `move2` package. It might be necessary to convert between the two object types. The idea is to use either one in the workflow as `move2` gets brought to full functionality.
+## GENERAL NOTES
 
-Folder Structure for the Workspace
+This file will index and track all changes and modifications made to the code scripts for the entire duration of the PhD. project.
 
--   Data_Raw folder
+**IMPORTANT NOTE:** As at present we are still in the transition between `move` and `move2`, ideally all Scripts will have two workflows: one code that works with the `move` package and one that uses the updated `move2` package. It might be necessary to convert between the two object types. The idea is to use the most appropriate until `move2` gets brought to full functionality and replaces the original `move`.
 
-    For movement data downloaded from Movebank. SOP is to delete any older files when new ones are brought in. This is currently only necessary for the few (5 as of Dec.2023) birds still transmitting new data.
+## Notes on "Script A1: Import and Clean Data"
 
--   Data_Cleaned
-
-    For movement data that has been cleaned of duplicates, multi-locations and had its dates checked. As both `move` and `move2` packages are being used to analyse the data, ultimately two files for each Vulture will be created, with a specific naming convention for the outputs of each cleaning algorithm. `move`-cleaned data will be "Mv1.Cln.Vult\<number\>data.Rdata; and `move2`-cleaned data will be"Mv2.ClnLocs.Vult\<number\>.Rdata".
-
--   Data_Processed
-
-    For movement datasets after they have undergone transformations.
-
--   Scripts
-
-    Dedicated for Script `.R` files
-
--   Visualizations
-
-    For the outputs of visual analysis, like graphs, plots, maps, etc.
-
-### Version 1.0 of code and script organization
-
-The initial layout is a series of `.R` scripts with numbers (format `00. ; 01. ;...`) as an ascending indexing system. Each script is dedicated to a particular task of the workflow dealing with movement data, like "Clean data" and "Calculate Home Ranges". Branches and/or additional steps in the workflow that entail their own separate set of instructions can also be included (format `01A. ; 01B. ; 02A. ;...`) .
-
-Each script will have a short description of its intended function, followed by a section with commands to load all the necessary R packages used in that specific code. Then it will have sections dedicated to each individual step of the particular task, using the format "\# <Step Name> -------...". The number of hash in each Section name follows standard Markdown notation for headings in descending order of importance.
-
-### Version 2.0 of code and script organization
-
-The script organization system will be changed due to flexibility issues. The neat separation in ascending numbers doesn't take into account branches or alternative paths, and makes it cumbersome to place certain codes that must be applied to just specific situations.
-
-The .R scripts will be named according to a letter
-
-## Notes on Script 01: CLEAN DATA
-
-### `Move` (Old) Workflow:
+### `Move` Workflow:
 
 1.  The movement data has to be downloaded from the Movebank online repository in `.csv` format, and then imported to the R environment using the function `read.csv()`, as the size of the datasets makes them difficult to wield using the available internet speed.
 
@@ -59,13 +29,13 @@ The .R scripts will be named according to a letter
 
 3.  In the `as.POSIXct()` function, the argument `format = "%F %T"` uses these values as "%F" is equivalent to %Y-%m-%d and "%T" is equivalent to %H:%M:%S.
 
-### `Move2` (New) Workflow:
+### `Move2` Workflow:
 
 1.  `(S42 NOTE)` The option of running the Old Workflow using the `move` package and the convert the resulting object to the `move2` type is available in the Script.
 
 2.  The presence of missing values in the dataset can now be due to the inclusion of non-location data from other sensors (ACC, MAG, etc.) in the same `move2` object. However, if the analysis to be carried over only encompasses the use of GPS data, then is recommendable to eliminate them to save memory space.
 
-    This means that we might be producing two different kind of `move2` objects at the end of the `Script 01: CLEAN DATA`, one tight dataset containing strictly the data from the GPS sensor, and the other containing data from all the other sensors besides.
+    This means that we might be producing two different kind of `move2` objects at the end of the `Script A1: CLEAN DATA`, one tight dataset containing strictly the data from the GPS sensor, and the other containing data from all the other sensors besides.
 
 3.  The new algorithm produces a different result when outputting a clean dataset without duplicates or incomplete registries. The raw data of Vulture "Cuba-7198" (that has 1.511.956 observations when downloaded from Movebank) produces:
 
@@ -77,7 +47,7 @@ The .R scripts will be named according to a letter
 
 4.  The new algorithm also is inconsistent with the amount of variables that leaves in the movement data when the `.csv` file is cleaned of duplicates and missing values. Some Vulture's data has 41 variables, and others has 43, for example.
 
-## Notes on Script 02: EXPLORE AND VISUALIZE DATA
+## Notes on Script B1: EXPLORE AND VISUALIZE DATA
 
 ### `Move` (Old) Workflow:
 
@@ -92,7 +62,7 @@ The .R scripts will be named according to a letter
 
     -   Therefore, it's necessary remove class "move2" from object and let it with `sf`.
 
-## Notes on Script 03: ANALYZE TRAJECTORIES
+## Notes on Script C1: ANALYZE TRAJECTORIES
 
 ### `Move2` (New) Workflow:
 
@@ -100,6 +70,10 @@ The .R scripts will be named according to a letter
 
 ### **`UNFINISHED...`**
 
-## Notes on Script 04: ANALYZE AREAS
+## Notes on Script C2: ANALYZE AREAS
 
 ### `Move` (Old) Workflow:
+
+## Notes on "Script: BrCar'24 Track and MCP Home Range Analysis"
+
+The Script runs a simple spatial analysis using the move2 package to extract and visualize the movement tracks of all animals and calculate the Movement Convex Polygon (95%), exporting both as Vector files to be used in a GIS.

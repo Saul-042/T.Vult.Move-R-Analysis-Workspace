@@ -1,5 +1,5 @@
 #Title###############################################
-# T.VULTURE MOVE ANALYSIS. Script 00: DOWNLOAD DATA #
+# T.VULTURE MOVE ANALYSIS. Script A0: DOWNLOAD DATA #
 #Function############################################
 ## Downloads the movement data directly from the Movebank online repository.
 

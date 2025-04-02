@@ -1,33 +1,121 @@
 #Title ################################################
-# T.VULTURE MOVE ANALYSIS. Script 02: VISUALIZE DATA ##
+# T.VULTURE MOVE ANALYSIS. Script B1: VISUALIZE DATA ##
 #Function #############################################
 ## Checks the spatio-temporal organization of the movement data
-## Creates maps to pre-visualize the extent of the data in a geographical context 
+## Creates maps to chart the data in a geographical context 
 
-# `Move2` (New) Workflow ----------------------------------------------------------------------------------
+# `move2` Workflow ----------------------------------------------------------------------------------------
 ## Packages
 
 library(move2)
-library(mapview)
+library(sf)
+library(ggplot2)
 library(units)
 library(dplyr)
 
-## 0. Load the cleaned data -------------------------------------------------------------------------------
+## 0. Load the clean data ---------------------------------------------------------------------------------
 load(choose.files()) ## Select the file from the Data_Cleaned folder
 
-## 1. Check the general geographical distribution of the data ---------------------------------------------
-### Change the class of the object to `sf`
-VultSF <- TVult.mv2_loc
-class(VultSF) <- class(TVult.mv2_loc) %>% setdiff("move2") # Remove the "move2" class
+## 1. Check the geographical position distribution of the data --------------------------------------------
+### Option 1: use 'rworldxtra' package (DOESN'T NEED internet connection)
+library(rworldxtra)
+data("countriesHigh")
+world <- st_as_sf(countriesHigh)
+bbox <- st_bbox(TVult.mv2_loc)
+ggplot() +
+  geom_sf(data = world) +
+  geom_sf(data = mt_track_lines(TVult.mv2_loc), 
+          aes(color = `individual-local-identifier`)) +
+  coord_sf(xlim = c(bbox[1]-2, bbox[3]+2), 
+           ylim = c(bbox[2]-2, bbox[4]+2), 
+           expand = F)
+  theme_void()
 
-### Visualize the movement data as segments
-mapView(mt_track_lines(TVult.mv2_loc), zcol="individual-local-identifier", legend=F)
-## OR ##
-mapView(mt_track_lines(Cln_Vult.All$`individual-local-identifier`), zcol="individual-local-identifier", legend=F)
-### Visualize the location records as points
-#### <IMPORTANT WARNING>: This is a high-intensity process for the computer.
-mapView(VultSF, zcol="individual-local-identifier", legend=F)
+### Option 2: use 'ggspatial' package (NEEDS internet connection)
+library(ggspatial)
+ggplot() +
+  annotation_map_tile(zoom = 9) +
+  annotation_scale(aes(location = "br")) +
+  theme_linedraw() +
+  geom_sf(data = TVult.mv2_loc, 
+          color = "darkgrey", 
+          size = 1) +
+  geom_sf(data = mt_track_lines(TVult.mv2_loc), 
+          aes(color = `individual-local-identifier`)) +
+  guides(color = "none")
 
+### Option 3: use 'mapview' package (NEEDS an internet connection and a VPN (from .cu))
+library(mapview)
+#### Visualize the movement data as segments
+mapView(mt_track_lines(TVult.mv2_loc), 
+        zcol="individual-local-identifier", 
+        legend=F)
+#### Visualize the location records as points # <WARNING>: This is a high-intensity process for the computer.
+mapView(TVult.mv2_loc, zcol="individual-local-identifier", legend=F)
+##### Special case: Check the geographical position distribution of all the individuals
+mapView(mt_track_lines(Cln_Vult.All$`individual-local-identifier`), 
+        zcol="individual-local-identifier", 
+        legend=F)
+
+### Option 4: use 'ggmap' package (NEEDS an internet connection and a VPN, also NEEDS an API (check after feb.15.2025 to see if the API still works and go to the page to see if a new one can be obtained for free))
+library(ggmap)
+register_stadiamaps("e0acaa53-a221-4e6a-b475-7ea3e1177c2e", write = FALSE) # Register API key
+
+map <- get_stadiamap(bbox = c(left = -81.54563, 
+                              bottom = 21.00317, 
+                              right = -77.26951, 
+                              top = 23.08256),
+                     zoom = 9, 
+                     maptype = "stamen_terrain")
+ggmap(map) +
+  geom_sf(data = TVult.mv2_loc, inherit.aes = FALSE) +
+  geom_sf(data = mt_track_lines(TVult.mv2_loc), 
+          aes(color = `individual-local-identifier`), 
+          inherit.aes = FALSE) +
+  guides(color = "none")
+
+## Option 4 > use the tmap package ## Check the package later
+library(tmap)
+# with a movestack just to inspect data
+tmap_mode("view")
+tm_shape(bats)+tm_dots()
+
+# transform to e.g. sf class for more options
+library(sf)
+bats_SFp <- bats_df%>%st_as_sf(coords = c("location.long", "location.lat"), crs = crs(bats))%>%st_cast("POINT")
+tmap_mode("view")
+tm_shape(bats_SFp)+tm_dots(col = "individual.local.identifier")
+
+## Save the movement lines as a '.shp' file for working on a GIS
+st_write(mt_track_lines(TVult.mv2_loc), dsn = ".", 
+             layer = "Data_Processed/AllTracks1", driver="ESRI Shapefile")
+
+## Animate the tracks (doesn't work currently, wait till Windows can be activated to check if works)
+data_interpolated <- TVult.mv2_loc[!sf::st_is_empty(TVult.mv2_loc), ] |>
+  mt_interpolate(
+    seq(
+      as.POSIXct("2021-01-13"),
+      as.POSIXct("2022-01-13"), "1 day" 
+    ),
+    max_time_lag = units::as_units(3, "day"),
+    omit = TRUE
+  )
+animation <- ggplot() +
+  annotation_map_tile(zoom = 9, progress = "none") +
+  annotation_scale() +
+  theme_linedraw() +
+  geom_sf(
+    data = data_interpolated, size = 3,
+    aes(color = `individual-local-identifier`)
+  ) +
+  gganimate::transition_manual(timestamp) +
+  labs(
+    title = "Vulture CUBA-7198",
+    subtitle = "Time: {current_frame}",
+    color = "Individual"
+  )
+gganimate::animate(animation,
+                   nframes = length(unique(data_interpolated$timestamp)))
 
 ## 2. Explore the temporal distribution and resolution of the data ----------------------------------------
 ### Tabulate the amount of records per year and month
@@ -89,7 +177,7 @@ hist(turnAngles, breaks = 18, xlab="Turning Angle", main = NA)
 unique(sf::st_is_empty(TVult.mv2_loc))
 
 
-# `Move` (Old) Workflow -----------------------------------------------------------------------------------
+# `move` Workflow -----------------------------------------------------------------------------------------
 ## Packages 
 library(move)
 library(mapview)
@@ -137,3 +225,6 @@ tmstampLocal <- with_tz(tmstamp, tzone="America/Havana")
 tapply(tmstampLocal, hour(tmstampLocal), length)
 ### Table with the distribution of records across hours of the day and months of the year
 tapply(tmstampLocal, list(month(tmstampLocal),hour(tmstampLocal)), length)
+
+(0.87*0.01)/(0.87*0.01+0.095*0.99)
+

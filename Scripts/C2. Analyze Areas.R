@@ -47,7 +47,6 @@ apply(st_coordinates(Cln_Vult.All), 2, median)
 AEQ_1p <- "+proj=aeqd +lat_0=22.38059 +lon_0=-79.26601 +x_0=0 +y_0=0 +R=6371000 +units=m +no_defs +type=crs"
 habitatAEQ <- sf::st_transform(Cln_Vult.All, AEQ_1p)
 
-library(rgeos)
 #first option: reproject locations, than calculate mcp
 Cln_Vult.All_sp.proj <- spTransform(Cln_Vult.All_sp, AEQ_1p)
 mcpData.proj <- adehabitatHR::mcp(Cln_Vult.All_sp.proj)
@@ -59,8 +58,6 @@ plot(Cln_Vult.All_sp.proj[Cln_Vult.All_sp.proj$id=="X021",], bty="na", xlab="Lon
 plot(mcpData.proj[mcpData.proj$id=="X021",], add=TRUE)
 plot(mcpData[mcpData$id=="X021",], add=TRUE, lty=2)
 legend("bottomleft", c("First reproject then mcp", "First mcp then reproject"), lty=c(1,2), bty="n")
-legend("topleft", sprintf("Area = %.2f", c(rgeos::gArea(mcpData.proj, byid=TRUE)["X021"],
-                                           rgeos::gArea(mcpData, byid=TRUE)["X021"])/1000^2), lty=c(1,2), bty="n")
 # Note to plot:
 # - the 2 options result in different area calculations
 # - adehabitatHR uses distance between locations to do the calculation

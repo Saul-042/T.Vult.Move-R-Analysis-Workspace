@@ -1,0 +1,19 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{titling}
+
+\title{Seasonal changes in home ranges of Turkey Vultures in Cuba}
+\author{Saul González}
+\date{July 2024}
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+\textbf{\thetitle} \\
+Other titles: \\
+Option 1: Changes in the home ranges of Cuban Turkey Vultures between seasons
+\input{01_Introduction}
+\input{02_Materials & Methods}
+03 Results \\
+04 Discussion \\
+
+\end{document}
